@@ -35,42 +35,66 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/iptv-org/epg.git .epg-src
           cd .epg-src
-          npm install --no-audit --no-fund
+          npm ci --no-audit --no-fund --ignore-scripts
+          npm run api:load
 
-      - name: 生成抓取清单（M3U -> channels.xml）
+      - name: 生成抓取清单
         run: |
           python3 scripts/build_channels.py \
-            --m3u "${M3U_URL:-https://iptv-org.github.io/iptv/index.m3u}" \
+            --m3u "https://iptv-org.github.io/iptv/index.m3u" \
             --epg-repo .epg-src \
             --out build/channels.xml \
-            --report build/report.json \
-            --max-per-channel "${MAX_PER_CHANNEL:-1}"
-        env:
-          M3U_URL: ${{ vars.M3U_URL }}
-          MAX_PER_CHANNEL: ${{ vars.MAX_PER_CHANNEL }}
+            --report build/report.json
+          grep -c "<channel " build/channels.xml
+
+      - name: 过滤掉没有抓取配置的站点
+        run: |
+          cd .epg-src
+          python3 - "$GITHUB_WORKSPACE/build/channels.xml" <<'PY'
+          import os, re, sys
+          path = sys.argv[1]
+          kept, dropped = [], 0
+          for line in open(path, encoding="utf-8"):
+              m = re.search(r'<channel site="([^"]+)"', line)
+              if m and not os.path.isfile(f"sites/{m.group(1)}/{m.group(1)}.config.js"):
+                  dropped += 1
+                  continue
+              kept.append(line)
+          open(path, "w", encoding="utf-8").writelines(kept)
+          print(f"dropped {dropped} channel(s) without config")
+          PY
 
       - name: 抓取节目单
         run: |
           cd .epg-src
+          set -o pipefail
           npm run grab -- \
             --channels=../build/channels.xml \
             --output=../build/guide.xml \
-            --maxConnections="${MAX_CONNECTIONS:-8}" \
-            --days="${DAYS:-3}"
-        env:
-          MAX_CONNECTIONS: ${{ vars.MAX_CONNECTIONS }}
-          DAYS: ${{ vars.DAYS }}
+            --maxConnections=8 \
+            --days=3 2>&1 | tee ../build/grab.log
+
+      - name: 抓取日志（失败时也会执行）
+        if: always()
+        run: |
+          echo "===== grab.log 最后 40 行 ====="
+          tail -40 build/grab.log 2>/dev/null || echo "没有生成 grab.log"
+          ls -lh build/guide.xml 2>/dev/null || echo "没有生成 guide.xml"
 
       - name: 整理、去重、压缩
+        if: success()
         run: |
           python3 scripts/postprocess.py build/guide.xml public/epg.xml \
             --channels build/channels.xml --gzip
 
       - name: 生成订阅首页
+        if: success()
         run: python3 scripts/make_index.py public --report build/report.json
 
       - uses: actions/upload-pages-artifact@v3
+        if: success()
         with:
           path: public
 
       - uses: actions/deploy-pages@v4
+        if: success()
