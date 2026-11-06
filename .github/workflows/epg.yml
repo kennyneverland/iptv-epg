@@ -1,0 +1,76 @@
+name: Build EPG
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: epg
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 获取 iptv-org/epg 抓取器
+        run: |
+          git clone --depth 1 https://github.com/iptv-org/epg.git .epg-src
+          cd .epg-src
+          npm install --no-audit --no-fund
+
+      - name: 生成抓取清单（M3U -> channels.xml）
+        run: |
+          python3 scripts/build_channels.py \
+            --m3u "${M3U_URL:-https://iptv-org.github.io/iptv/index.m3u}" \
+            --epg-repo .epg-src \
+            --out build/channels.xml \
+            --report build/report.json \
+            --max-per-channel "${MAX_PER_CHANNEL:-1}"
+        env:
+          M3U_URL: ${{ vars.M3U_URL }}
+          MAX_PER_CHANNEL: ${{ vars.MAX_PER_CHANNEL }}
+
+      - name: 抓取节目单
+        run: |
+          cd .epg-src
+          npm run grab -- \
+            --channels=../build/channels.xml \
+            --output=../build/guide.xml \
+            --maxConnections="${MAX_CONNECTIONS:-8}" \
+            --days="${DAYS:-3}"
+        env:
+          MAX_CONNECTIONS: ${{ vars.MAX_CONNECTIONS }}
+          DAYS: ${{ vars.DAYS }}
+
+      - name: 整理、去重、压缩
+        run: |
+          python3 scripts/postprocess.py build/guide.xml public/epg.xml \
+            --channels build/channels.xml --gzip
+
+      - name: 生成订阅首页
+        run: python3 scripts/make_index.py public --report build/report.json
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - uses: actions/deploy-pages@v4
