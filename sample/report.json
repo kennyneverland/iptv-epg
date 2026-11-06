@@ -1,0 +1,91 @@
+{
+  "playlist_channels": 3642,
+  "covered_channels": 1336,
+  "coverage_pct": 36.7,
+  "channel_entries": 1336,
+  "sites": 94,
+  "top_sites": [
+    [
+      "i.mjh.nz",
+      230
+    ],
+    [
+      "tataplay.com",
+      128
+    ],
+    [
+      "mi.tv",
+      105
+    ],
+    [
+      "epg.iptvx.one",
+      88
+    ],
+    [
+      "sky.com",
+      80
+    ],
+    [
+      "tvtv.us",
+      77
+    ],
+    [
+      "tv.blue.ch",
+      63
+    ],
+    [
+      "tvprofil.com",
+      47
+    ],
+    [
+      "gatotv.com",
+      34
+    ],
+    [
+      "sat.tv",
+      32
+    ],
+    [
+      "tv.mail.ru",
+      30
+    ],
+    [
+      "tv.sfr.fr",
+      25
+    ],
+    [
+      "m.tv.sms.cz",
+      24
+    ],
+    [
+      "mytelly.co.uk",
+      20
+    ],
+    [
+      "gigatv.3bbtv.co.th",
+      18
+    ]
+  ],
+  "unmatched_sample": [
+    "00sReplay.us@SD",
+    "1Plus1International.ua@HD",
+    "1Plus1Marafon.ua@SD",
+    "1AlmereTV.nl@SD",
+    "1HDMusicTelevision.ru@HD",
+    "1TwenteTV.nl@SD",
+    "2GB.au@SD",
+    "2MMonde.ma@Plus1",
+    "3ABNCanada.ca@SD",
+    "3ABNFrench.us@SD",
+    "3ABNInternational.us@SD",
+    "3ABNKids.us@SD",
+    "3ABNPraiseHimMusicNetwork.us@SD",
+    "3ABNProclaimNetwork.us@SD",
+    "3ABNTVUganda.ug@SD",
+    "3AW.au@SD",
+    "3CatCameresdeltemps.es@SD",
+    "3CatExclusiu1.es@SD",
+    "3CatExclusiu2.es@SD",
+    "3CatExclusiu3.es@SD"
+  ]
+}
