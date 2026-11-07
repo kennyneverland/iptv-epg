@@ -70,14 +70,26 @@ jobs:
           python3 - <<'PY'
           p = "build/channels.xml"
           aliases = [
+              # Canal+ Sport 5-8：epgshare01 斯洛伐克源（已验证有数据）
               ("epgshare01.online", "SK1#CANAL+.Sport.5.HD.sk", "CanalPlusSport5SK.sk@SD", "sk", "Canal+ Sport 5"),
               ("epgshare01.online", "SK1#CANAL+.Sport.6.HD.sk", "CanalPlusSport6SK.sk@SD", "sk", "Canal+ Sport 6"),
               ("epgshare01.online", "SK1#CANAL+.Sport.7.HD.sk", "CanalPlusSport7SK.sk@SD", "sk", "Canal+ Sport 7"),
               ("epgshare01.online", "SK1#CANAL+.Sport.8.HD.sk", "CanalPlusSport8SK.sk@SD", "sk", "Canal+ Sport 8"),
-              ("epgshare01.online", "RAKUTEN_ES1#ES:.Películas.de.Acción.-.Rakuten.TV.es", "RakutenTVActionMovies.es@Spain", "es", "Rakuten TV Action Movies"),
-              ("epgshare01.online", "RAKUTEN_ES1#ES:.Películas.de.Drama.-.Rakuten.TV.es", "RakutenTVDramaMovies.es@Spain", "es", "Rakuten TV Drama Movies"),
+              # Canal+ Sport 2：两个候选源
+              ("epgshare01.online", "CZ1#Canal+.Sport.2.cz", "CanalPlusSport2SK.sk@SD", "sk", "Canal+ Sport 2"),
+              ("m.tv.sms.cz", "Canal%2B+Sport+2", "CanalPlusSport2SK.sk@SD", "sk", "Canal+ Sport 2"),
+              # Rakuten：改用 Samsung TV Plus 西班牙源
+              ("i.mjh.nz", "SamsungTVPlus/es#ES2600004BD", "RakutenTVActionMovies.es@Spain", "es", "Rakuten TV Action Movies"),
+              ("i.mjh.nz", "SamsungTVPlus/es#ES2600003UM", "RakutenTVDramaMovies.es@Spain", "es", "Rakuten TV Drama Movies"),
               ("i.mjh.nz", "SamsungTVPlus/gb#GB2600018PD", "RakutenTVTopMovies.es@UK", "en", "Rakuten TV Top Movies UK"),
+              # Tennis Channel 2：三个候选源
               ("i.mjh.nz", "Plex/us#5e20b730f2f8d5003d739db7-65944d40cbc51b25e5070a18", "TennisChannel2.us@SD", "en", "Tennis Channel 2"),
+              ("plex.tv", "65944d40cbc51b25e5070a18", "TennisChannel2.us@SD", "en", "Tennis Channel 2"),
+              ("i.mjh.nz", "Roku/all#a0b7c0bc09955942866e7072266483c8", "TennisChannel2.us@SD", "en", "Tennis Channel 2"),
+              # ION Plus：两个候选源
+              ("i.mjh.nz", "Plex/us#5e20b730f2f8d5003d739db7-627e347795b0f50af26d78f9", "IONPlus.us@East", "en", "ION Plus"),
+              ("i.mjh.nz", "SamsungTVPlus/us#USBD300003LK", "IONPlus.us@East", "en", "ION Plus"),
+              # CNN 国际版欧洲
               ("allente.dk", "50024", "CNNInternational.us@Europe", "en", "CNN International"),
           ]
           txt = open(p, encoding="utf-8").read()
