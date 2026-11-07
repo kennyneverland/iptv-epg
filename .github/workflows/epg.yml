@@ -44,7 +44,8 @@ jobs:
             --m3u "https://iptv-org.github.io/iptv/index.m3u" \
             --epg-repo .epg-src \
             --out build/channels.xml \
-            --report build/report.json
+            --report build/report.json \
+            --max-per-channel 2
           grep -c "<channel " build/channels.xml
 
       - name: 过滤掉没有抓取配置的站点
@@ -62,6 +63,31 @@ jobs:
               kept.append(line)
           open(path, "w", encoding="utf-8").writelines(kept)
           print(f"dropped {dropped} channel(s) without config")
+          PY
+
+      - name: 补充缺失频道的节目源
+        run: |
+          python3 - <<'PY'
+          p = "build/channels.xml"
+          aliases = [
+              ("epgshare01.online", "SK1#CANAL+.Sport.5.HD.sk", "CanalPlusSport5SK.sk@SD", "sk", "Canal+ Sport 5"),
+              ("epgshare01.online", "SK1#CANAL+.Sport.6.HD.sk", "CanalPlusSport6SK.sk@SD", "sk", "Canal+ Sport 6"),
+              ("epgshare01.online", "SK1#CANAL+.Sport.7.HD.sk", "CanalPlusSport7SK.sk@SD", "sk", "Canal+ Sport 7"),
+              ("epgshare01.online", "SK1#CANAL+.Sport.8.HD.sk", "CanalPlusSport8SK.sk@SD", "sk", "Canal+ Sport 8"),
+              ("epgshare01.online", "RAKUTEN_ES1#ES:.Películas.de.Acción.-.Rakuten.TV.es", "RakutenTVActionMovies.es@Spain", "es", "Rakuten TV Action Movies"),
+              ("epgshare01.online", "RAKUTEN_ES1#ES:.Películas.de.Drama.-.Rakuten.TV.es", "RakutenTVDramaMovies.es@Spain", "es", "Rakuten TV Drama Movies"),
+              ("i.mjh.nz", "SamsungTVPlus/gb#GB2600018PD", "RakutenTVTopMovies.es@UK", "en", "Rakuten TV Top Movies UK"),
+              ("i.mjh.nz", "Plex/us#5e20b730f2f8d5003d739db7-65944d40cbc51b25e5070a18", "TennisChannel2.us@SD", "en", "Tennis Channel 2"),
+              ("allente.dk", "50024", "CNNInternational.us@Europe", "en", "CNN International"),
+          ]
+          txt = open(p, encoding="utf-8").read()
+          add = "".join(
+              f'  <channel site="{s}" lang="{l}" xmltv_id="{x}" site_id="{sid}">{n}</channel>\n'
+              for s, sid, x, l, n in aliases
+          )
+          txt = txt.replace("</channels>", add + "</channels>")
+          open(p, "w", encoding="utf-8").write(txt)
+          print(f"added {len(aliases)} alias channel(s)")
           PY
 
       - name: 抓取节目单
