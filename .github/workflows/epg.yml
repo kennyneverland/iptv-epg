@@ -77,16 +77,16 @@ jobs:
               ("epgshare01.online", "SK1#CANAL+.Sport.8.HD.sk", "CanalPlusSport8SK.sk@SD", "sk", "Canal+ Sport 8"),
               # Canal+ Sport 2：捷克源
               ("epgshare01.online", "CZ1#Canal+.Sport.2.cz", "CanalPlusSport2SK.sk@SD", "sk", "Canal+ Sport 2"),
-              # Rakuten 西班牙两个台：用英国 Samsung TV Plus 的同名频道
+              # Rakuten 西班牙两个台：用英国 Samsung TV Plus 的同名频道（数据只有几个小时）
               ("i.mjh.nz", "SamsungTVPlus/gb#GB2600015OS", "RakutenTVActionMovies.es@Spain", "en", "Rakuten TV Action Movies"),
               ("i.mjh.nz", "SamsungTVPlus/gb#GB2600012R3", "RakutenTVDramaMovies.es@Spain", "en", "Rakuten TV Drama Movies"),
               ("i.mjh.nz", "SamsungTVPlus/gb#GB2600018PD", "RakutenTVTopMovies.es@UK", "en", "Rakuten TV Top Movies UK"),
-              # Tennis Channel（美国台）：改用专门的美国源
+              # Tennis Channel（美国台）：epg.iptvx.one 美国源
               ("epg.iptvx.one", "tennis-cnl-us", "TennisChannel.us@SD", "en", "Tennis Channel"),
-              # Tennis Channel 2：Pluto TV 美国源
-              ("pluto.tv", "681109b688b9d85d0938c6ba", "TennisChannel2.us@SD", "en", "Tennis Channel 2"),
-              # ION Plus
-              ("i.mjh.nz", "Plex/us#5e20b730f2f8d5003d739db7-627e347795b0f50af26d78f9", "IONPlus.us@East", "en", "ION Plus"),
+              # Tennis Channel 2：Plex 源（40 条，已验证）
+              ("epgshare01.online", "PLEX1#plex.tv.Tennis.Channel.2.plex", "TennisChannel2.us@SD", "en", "Tennis Channel 2"),
+              # ION Plus：Plex 源（90 条，已验证）
+              ("epgshare01.online", "PLEX1#plex.tv.ION.Plus.plex", "IONPlus.us@East", "en", "ION Plus"),
               # CNN 国际版欧洲
               ("allente.dk", "50024", "CNNInternational.us@Europe", "en", "CNN International"),
           ]
